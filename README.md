@@ -1,3 +1,8 @@
+# Docker commandline 
+docker volume create jenkins_home
+-v "C:/Program Files/Docker/Docker/resources/bin/docker":/usr/bin/docker
+docker run -d  -v /var/run/docker.sock:/var/run/docker.sock  -v jenkins_home:/var/jenkins_home -p 8085:8080 --name myjenkins jenkins/jenkins
+
 # Scalable and Resilient Web Application on GCP
 This repository contains the Deployment Manager templates and Chef recipes required to deploy the solution described in the [Scalable and Resilient Web Applications on Google Cloud Platform](http://cloud.google.com/solutions/scalable-and-resilient-apps) paper.
 
