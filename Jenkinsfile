@@ -1,35 +1,11 @@
 pipeline {
-  agent {
-    kubernetes {
-      label 'image-builder'
-      defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-labels:
-  component: ci
-spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: cd-jenkins
-  containers:
-  - name: packer
-    image: hashicorp/packer:full
-    command:
-    - cat
-    tty: true
-  - name: gcloud
-    image: gcr.io/cloud-builders/gcloud
-    command:
-    - cat
-    tty: true
-"""
-}
-  }
   stages {
     stage('Build Images') {
       parallel {
         stage('Build GCE Image with Packer') {
+			agent {
+                docker { image 'hashicorp/packer:full' }
+            }
           steps {
             container('packer') {
               sh """
@@ -45,6 +21,9 @@ spec:
           }
         }
         stage('Build and push image with Cloud Build') {
+		agent {
+                docker { image 'gcr.io/cloud-builders/gcloud' }
+            }
           steps {
             container('gcloud') {
               sh """
